@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gunting Batu Kertas</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <style>
+      a:link {
+        text-decoration: none;
+      }
+      a:visited {
+        text-decoration: none;
+      }
+      a:active {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: none;
+        background-color: yellow;
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"><%- include('header') %></div>
+        <div class="col-md-4"><%- include('menu') %></div>
+        <div class="col-md-6">
+          <div
+            id="win"
+            class="d-flex flex-column justify-content-center align-items-center"
+            style="height: 100px"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-trophy"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935zM3.504 1c.007.517.026 1.006.056 1.469.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.501.501 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667.03-.463.049-.952.056-1.469H3.504z"
+              />
+            </svg>
+            <div id="hasil"></div>
+            <h4>ROOM GAME : <%= id %></h4>
+          </div>
+          <div class="d-flex flex-row align-items-center" height="250px">
+            <form method="post">
+              Masukan Nama PLayer : <br /><input
+                type="text"
+                name="namaplayer"
+                id="namaplayer"
+              /><button type="button" id="simpanplayer" onclick="simpan()">
+                Simpan
+              </button>
+              <input type="hidden" name="room" id="room" value="<%= id %>" />
+              <input type="text" name="isplayer" id="isplayer" />
+            </form>
+          </div>
+          <div
+            class="d-flex flex-row justify-content-center align-items-center"
+            style="height: 350px"
+          >
+            <div
+              class="d-flex flex-direction flex-column align-items-center p-5"
+            >
+              <div id="pilihan1"> </div>
+              <p>Player One</p>
+            </div>
+            <h1>VS</h1>
+            <div
+              class="d-flex flex-direction flex-column align-items-center p-5"
+              height="550px"
+            >
+            <div id="pilihan2"> </div> <!-- <img
+          src="/publics/assets/gunting.png"
+          width="150"
+          height="150"
+          alt=""
+          srcset=""
+          id="pilihan2"
+        /> --> 
+              <p>Player Two</p>
+            </div>
+          </div>
+
+          <div
+            class="d-flex justify-content-center flex-row align-items-center"
+            height="250px"
+          >
+            <span class="pe-5">Choice One:</span>
+            <img
+              src="/publics/assets/batu.png"
+              onclick="pilih('batu')"
+              class="p-3"
+              width="100"
+              height="100"
+              alt=""
+              srcset=""
+            />
+            <img
+              src="/publics/assets/gunting.png"
+              onclick="pilih('gunting')"
+              class="p-3"
+              width="100"
+              height="100"
+              srcset=""
+            />
+            <img
+              src="/publics/assets/kertas.png"
+              onclick="pilih('kertas')"
+              class="p-3"
+              width="100"
+              height="100"
+              srcset=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script>
+      function pilih(a) {
+        var pilih = a
+        var namaplayer = $("#namaplayer").val();
+        var room = $("#room").val();
+        var player = $("#isplayer").val();
+        var hasil ='';
+        $.ajax({
+          type: "post",
+          url: "/pilih",
+          data: { pilih, namaplayer,room ,player},
+          dataType: "json",
+        }).done(function (data) {
+            var img1=` <img src="/publics/assets/${data.pilihan1}.png" width="150" height="150" id="pilihan1" />`
+            var img2=` <img src="/publics/assets/${data.pilihan2}.png" width="150" height="150" id="pilihan2" />`
+          $("#pilihan1").html(img1);
+          $("#pilihan2").html(img2);
+          if(data.cek===1){
+            hasil = statusPemenang(data.pilihan1, data.pilihan2,data.player1, data.player2) 
+            hasil=`<h4 style="color:blue">${hasil}</h4>`
+            $("#hasil").html(hasil)
+          }else{
+            hasil=`<h4 style="color:red">${data.cek}</h4>`
+            $("#hasil").html(hasil);
+          }
+          
+        });
+      }
+      function simpan() {
+        
+        var player = $("#namaplayer").val();
+        var room = $("#room").val();
+        $.ajax({
+          type: "post",
+          url: "/ajax",
+          data: { player, room },
+          dataType: "json",
+        }).done(function (data) {
+          alert(
+            "Selamat Datang : " +
+              data.player +
+              " di room " +
+              room +
+              " => " +
+              data.isHow
+          );
+          $("#namaplayer").val(data.player);
+          $("#isplayer").val(data.isHow);
+        });
+      }
+
+
+      
+function statusPemenang(x, y, A, B) {
+    var status = "";
+    switch (y) {
+      case "batu":
+        if (x == "batu") {
+          status = "seri";
+        } else if (x == "gunting") {
+          status = B + " menang";
+        } else if (x == "kertas") {
+          status = A + " menang";
+        } else {
+          status = "";
+        }
+        break;
+      case "gunting":
+        if (x == "batu") {
+          status = A + " menang";
+        } else if (x == "gunting") {
+          status = "seri";
+        } else if (x == "kertas") {
+          status = B + " menang";
+        } else {
+          status = "";
+        }
+        // code block
+        break;
+      case "kertas":
+        if (x == "batu") {
+          status = B + " menang";
+        } else if (x == "gunting") {
+          status = A + " menang";
+        } else if (x == "kertas") {
+          status = "seri";
+        } else {
+          status = "";
+        }
+        break;
+      default:
+      // code block
+    }
+  
+    return status;
+  }
+    </script>
+  </body>
+</html>
